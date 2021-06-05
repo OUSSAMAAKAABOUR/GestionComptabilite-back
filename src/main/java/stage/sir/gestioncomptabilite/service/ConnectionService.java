@@ -92,5 +92,19 @@ public class ConnectionService {
             return 1;
         }
     }
+    public int validatecompte(Connection connection){
+        Connection connection1 = connectionDao.findByUsernameAndPassword(connection.getUsername(),connection.getPassword());
+        connection.setId(connection1.getId());
+        connection.setEtat("valider");
+        connectionDao.save(connection);
+        return 1;
+    }
+    public int refusecompte(Connection connection){
+        Connection connection1 = connectionDao.findByUsernameAndPassword(connection.getUsername(),connection.getPassword());
+        connection.setId(connection1.getId());
+        connection.setEtat("refuser");
+        connectionDao.save(connection);
+        return 1;
+    }
 
 }

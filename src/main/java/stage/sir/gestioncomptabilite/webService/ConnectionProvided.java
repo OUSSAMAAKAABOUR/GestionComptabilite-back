@@ -41,4 +41,12 @@ public class ConnectionProvided {
     public int etatLogin(@PathVariable String username,@PathVariable String password) {
         return connectionService.etatLogin(username, password);
     }
+    @PutMapping("/validatecompte")
+    public int validatecompte(@RequestBody Connection connection) {
+        return connectionService.validatecompte(connection);
+    }
+    @PutMapping("/refusecompte")
+    public int refusecompte(@RequestBody Connection connection) {
+        return connectionService.refusecompte(connection);
+    }
 }
