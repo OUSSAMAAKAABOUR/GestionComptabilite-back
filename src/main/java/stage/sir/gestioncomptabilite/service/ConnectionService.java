@@ -107,4 +107,7 @@ public class ConnectionService {
         return 1;
     }
 
+    public List<Connection> findByEtat(String etat) {
+        return connectionDao.findByEtat(etat);
+    }
 }

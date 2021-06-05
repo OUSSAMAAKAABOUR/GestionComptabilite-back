@@ -49,4 +49,8 @@ public class ConnectionProvided {
     public int refusecompte(@RequestBody Connection connection) {
         return connectionService.refusecompte(connection);
     }
+    @GetMapping("/compteencour/etat/{etat}")
+    public List<Connection> findByEtat(@PathVariable String etat) {
+        return connectionService.findByEtat(etat);
+    }
 }

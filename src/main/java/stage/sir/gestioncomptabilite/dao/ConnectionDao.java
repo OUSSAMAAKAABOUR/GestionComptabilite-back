@@ -15,4 +15,5 @@ public interface ConnectionDao extends JpaRepository<Connection,Long> {
     int deleteByUsername(String username);
     Connection findByUsernameAndPassword(String username,String password);
     List<Connection> findByUsername(String usename);
+    List<Connection> findByEtat(String etat);
 }
