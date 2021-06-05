@@ -33,9 +33,9 @@ public class OperationSocieteProvided {
     public int saveAlone(@RequestBody OperationSociete operationSociete) {
         return operationSocieteService.saveAlone(operationSociete);
     }
-    @GetMapping("/societe/ice/{ice}/etatoperationsociete/ref/{etat}")
-    public List<OperationSociete> findBySocieteIceAndEtatOperationSocieteRef(@PathVariable String ice, @PathVariable String etat) {
-        return operationSocieteService.findBySocieteIceAndEtatOperationSocieteRef(ice, etat);
+    @GetMapping("/etatoperationsociete/ref/{etat}")
+    public List<OperationSociete> findByEtatOperationSocieteRef(@PathVariable String etat) {
+        return operationSocieteService.findByEtatOperationSocieteRef(etat);
     }
     @PutMapping("/validate")
     public int validateOperation(@RequestBody OperationSociete operationSociete) {

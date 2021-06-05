@@ -99,8 +99,8 @@ public class OperationSocieteService {
         operationSocieteDao.save(operationSociete);
         return 1;
     }
-    public List<OperationSociete> findBySocieteIceAndEtatOperationSocieteRef(String ice, String etat) {
-        return operationSocieteDao.findBySocieteIceAndEtatOperationSocieteRef(ice, etat);
+    public List<OperationSociete> findByEtatOperationSocieteRef(String etat) {
+        return operationSocieteDao.findByEtatOperationSocieteRef(etat);
     }
     public List<OperationSociete> findOperationPourAffecterComptable(){
         String query = "SELECT o FROM OperationSociete o WHERE o.etatOperationSociete.ref = 'Validate' AND o.comptableTaiteur IS NULL AND o.comptableValidateur IS NULL";
