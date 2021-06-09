@@ -3,10 +3,7 @@ package stage.sir.gestioncomptabilite.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import stage.sir.gestioncomptabilite.bean.DeclarationTva;
-import stage.sir.gestioncomptabilite.bean.Facture;
-import stage.sir.gestioncomptabilite.bean.Societe;
-import stage.sir.gestioncomptabilite.bean.TypeDeclarationTva;
+import stage.sir.gestioncomptabilite.bean.*;
 import stage.sir.gestioncomptabilite.dao.DeclarationTvaDao;
 import stage.sir.gestioncomptabilite.util.StringUtil;
 import stage.sir.gestioncomptabilite.vo.*;
@@ -54,6 +51,7 @@ public class DeclarationTvaService {
         return declarationTvaDao.findAll();
     }
 
+    //save de la declaration Tva si un administrateur qui veut l'enregistrer
     public int save(DeclarationTva declarationTva){
         if (declarationTva.getEtatDeclaration() == null){
             declarationTva.setRef(System.currentTimeMillis()+"");
@@ -85,6 +83,7 @@ public class DeclarationTvaService {
             return -5;
         }
         else {
+            declarationTva.setComptable(null);
             declarationTvaDao.save(declarationTva);
             List<Facture> factures = new ArrayList<Facture>();
             double tvac = 0,tvap = 0,dtva = 0;
@@ -114,6 +113,75 @@ public class DeclarationTvaService {
             return 1;
         }
     }
+
+    //save de la declaration Tva si un comptable qui veut l'enregistrer
+    public int savePourComptable(DeclarationTva declarationTva){
+        if (declarationTva.getEtatDeclaration() == null){
+            declarationTva.setRef(System.currentTimeMillis()+"");
+        }
+        Societe s = societeService.findByIce(declarationTva.getSociete().getIce());
+        declarationTva.setSociete(s);
+        TypeDeclarationTva t = typeDeclarationTvaService.findByRef(declarationTva.getTypeDeclarationTva().getRef());
+        declarationTva.setTypeDeclarationTva(t);
+        Comptable comptable = comptableService.findByCode(declarationTva.getComptable().getCode());
+        declarationTva.setComptable(comptable);
+        if (declarationTva.getTypeDeclarationTva().getLibelle().equals("trimestrielle")){
+            if (declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndTrim(declarationTva.getSociete().getIce(),"Brouillon",declarationTva.getAnnee(),declarationTva.getTrim())!= null){
+                declarationTva.setId(declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndTrim(declarationTva.getSociete().getIce(),"Brouillon",declarationTva.getAnnee(),declarationTva.getTrim()).getId());
+            }
+        }else {
+            if (declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndMois(declarationTva.getSociete().getIce(),"Brouillon",declarationTva.getAnnee(),declarationTva.getMois())!= null){
+                declarationTva.setId(declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndMois(declarationTva.getSociete().getIce(),"Brouillon",declarationTva.getAnnee(),declarationTva.getMois()).getId());
+            }
+        }
+
+        if (s==null){
+            return  -2;
+        }
+        else if (t==null){
+            return -3;
+        }
+        else if (comptable == null){
+            return -4;
+        }
+        else if (declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndTrim(declarationTva.getSociete().getIce(),"Valider",declarationTva.getAnnee(),declarationTva.getTrim())!= null){
+            return -5;
+        }
+        else if (declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndMois(declarationTva.getSociete().getIce(),"Valider",declarationTva.getAnnee(),declarationTva.getMois())!= null){
+            return -6;
+        }
+        else {
+            declarationTvaDao.save(declarationTva);
+            List<Facture> factures = new ArrayList<Facture>();
+            double tvac = 0,tvap = 0,dtva = 0;
+            if (declarationTva.getTypeDeclarationTva().getLibelle().equals("trimestrielle")){
+                factures = factureService.findBySocieteSourceIceAndAnneeAndTrim(declarationTva.getSociete().getIce(),declarationTva.getAnnee(),declarationTva.getTrim());
+            }else {
+                factures = factureService.findBySocieteSourceIceAndAnneeAndMois(declarationTva.getSociete().getIce(),declarationTva.getAnnee(),declarationTva.getMois());
+            }
+            DeclarationTva myDeclarationTva = findByRef(declarationTva.getRef());
+            for (Facture facture:factures){
+                if (facture.getTypeOperation().equals("Credit")){
+                    tvac += facture.getMontantTVA();
+                    facture.setDeclarationTva(myDeclarationTva);
+                    factureService.update(facture);
+                }else {
+                    tvap += facture.getMontantTVA();
+                    facture.setDeclarationTva(myDeclarationTva);
+                    factureService.update(facture);
+                }
+            }
+            myDeclarationTva.setTvacollecter(tvac);
+            myDeclarationTva.setTvaperdue(tvap);
+            dtva = tvac - tvap;
+            myDeclarationTva.setDifftva(dtva);
+            myDeclarationTva.setEtatDeclaration(etatDeclarationService.findByRef("Valider"));
+            declarationTvaDao.save(myDeclarationTva);
+            return 1;
+        }
+    }
+
+    //save brouillon si un administrateur qui veut l'enregistrer
     public int savebrouillon(DeclarationTva declarationTva){
         if (declarationTva.getEtatDeclaration() == null){
             declarationTva.setRef(System.currentTimeMillis()+"");
@@ -142,6 +210,73 @@ public class DeclarationTvaService {
         }
         else if (declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndMois(declarationTva.getSociete().getIce(),"Valider",declarationTva.getAnnee(),declarationTva.getMois())!= null){
             return -5;
+        }
+        else {
+            declarationTva.setComptable(null);
+            declarationTvaDao.save(declarationTva);
+            List<Facture> factures = new ArrayList<Facture>();
+            double tvac = 0,tvap = 0,dtva = 0;
+            if (declarationTva.getTypeDeclarationTva().getLibelle().equals("trimestrielle")){
+                factures = factureService.findBySocieteSourceIceAndAnneeAndTrim(declarationTva.getSociete().getIce(),declarationTva.getAnnee(),declarationTva.getTrim());
+            }else {
+                factures = factureService.findBySocieteSourceIceAndAnneeAndMois(declarationTva.getSociete().getIce(),declarationTva.getAnnee(),declarationTva.getMois());
+            }
+            DeclarationTva myDeclarationTva = findByRef(declarationTva.getRef());
+            for (Facture facture:factures){
+                if (facture.getTypeOperation().equals("Credit")){
+                    tvac += facture.getMontantTVA();
+                    facture.setDeclarationTva(myDeclarationTva);
+                    factureService.update(facture);
+                }else {
+                    tvap += facture.getMontantTVA();
+                    facture.setDeclarationTva(myDeclarationTva);
+                    factureService.update(facture);
+                }
+            }
+            myDeclarationTva.setTvacollecter(tvac);
+            myDeclarationTva.setTvaperdue(tvap);
+            dtva = tvac - tvap;
+            myDeclarationTva.setDifftva(dtva);
+            myDeclarationTva.setEtatDeclaration(etatDeclarationService.findByRef("Brouillon"));
+            declarationTvaDao.save(myDeclarationTva);
+            return 1;
+        }
+    }
+
+    //save brouillon si un comptable qui veut l'enregistrer
+    public int savebrouillonPourComptable(DeclarationTva declarationTva){
+        if (declarationTva.getEtatDeclaration() == null){
+            declarationTva.setRef(System.currentTimeMillis()+"");
+        }
+        Societe s = societeService.findByIce(declarationTva.getSociete().getIce());
+        declarationTva.setSociete(s);
+        TypeDeclarationTva t = typeDeclarationTvaService.findByRef(declarationTva.getTypeDeclarationTva().getRef());
+        declarationTva.setTypeDeclarationTva(t);
+        Comptable comptable = comptableService.findByCode(declarationTva.getComptable().getCode());
+        declarationTva.setComptable(comptable);
+        if (declarationTva.getTypeDeclarationTva().getLibelle().equals("trimestrielle")){
+            if (declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndTrim(declarationTva.getSociete().getIce(),"Brouillon",declarationTva.getAnnee(),declarationTva.getTrim())!= null){
+                declarationTva.setId(declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndTrim(declarationTva.getSociete().getIce(),"Brouillon",declarationTva.getAnnee(),declarationTva.getTrim()).getId());
+            }
+        }else {
+            if (declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndMois(declarationTva.getSociete().getIce(),"Brouillon",declarationTva.getAnnee(),declarationTva.getMois())!= null){
+                declarationTva.setId(declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndMois(declarationTva.getSociete().getIce(),"Brouillon",declarationTva.getAnnee(),declarationTva.getMois()).getId());
+            }
+        }
+        if (s==null){
+            return  -2;
+        }
+        else if (t==null){
+            return -3;
+        }
+        else if (comptable == null){
+            return -4;
+        }
+        else if (declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndTrim(declarationTva.getSociete().getIce(),"Valider",declarationTva.getAnnee(),declarationTva.getTrim())!= null){
+            return -5;
+        }
+        else if (declarationTvaDao.findBySocieteIceAndEtatDeclarationRefAndAnneeAndMois(declarationTva.getSociete().getIce(),"Valider",declarationTva.getAnnee(),declarationTva.getMois())!= null){
+            return -6;
         }
         else {
             declarationTvaDao.save(declarationTva);
@@ -202,6 +337,31 @@ public class DeclarationTvaService {
     }
     public List<DeclarationTva> findByCriteria(DeclarationTvaCriteria declarationTvaCriteria){
         String query = "SELECT d FROM DeclarationTva d WHERE 1=1";
+        if (StringUtil.isNotEmpty(declarationTvaCriteria.getSocieteref())){
+            query += " AND d.societe.ice = '" + declarationTvaCriteria.getSocieteref() + "'";
+        }
+        if (StringUtil.isNotEmpty(declarationTvaCriteria.getTypedeclarationtva())){
+            query += " AND d.typeDeclarationTva.ref = '" + declarationTvaCriteria.getTypedeclarationtva() + "'";
+        }
+        if (StringUtil.isNotEmpty(declarationTvaCriteria.getAnnee())){
+            query += " AND d.annee = '" + declarationTvaCriteria.getAnnee() + "'";
+        }
+        if (StringUtil.isNotEmpty(declarationTvaCriteria.getMois())){
+            query += " AND d.mois = '" + declarationTvaCriteria.getMois() + "'";
+        }
+        if (StringUtil.isNotEmpty(declarationTvaCriteria.getTrim())){
+            query += " AND d.trim = '" + declarationTvaCriteria.getMois() + "'";
+        }
+        if (StringUtil.isNotEmpty(declarationTvaCriteria.getDifftvamin())){
+            query += " AND d.difftva >= '" + declarationTvaCriteria.getDifftvamin() + "'";
+        }
+        if (StringUtil.isNotEmpty(declarationTvaCriteria.getDifftvamax())){
+            query += " AND d.difftva <= '" + declarationTvaCriteria.getDifftvamax() + "'";
+        }
+        return entityManager.createQuery(query).getResultList();
+    }
+    public List<DeclarationTva> findByCriteriaPourComptable(DeclarationTvaCriteria declarationTvaCriteria){
+        String query = "SELECT d FROM DeclarationTva d WHERE d.comptable.code = '" + declarationTvaCriteria.getRefcomptable() + "'";
         if (StringUtil.isNotEmpty(declarationTvaCriteria.getSocieteref())){
             query += " AND d.societe.ice = '" + declarationTvaCriteria.getSocieteref() + "'";
         }
@@ -352,4 +512,6 @@ public class DeclarationTvaService {
     private EntityManager entityManager;
     @Autowired
     EtatDeclarationService etatDeclarationService;
+    @Autowired
+    ComptableService comptableService;
 }

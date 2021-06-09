@@ -121,4 +121,8 @@ public class OperationSocieteService {
         operationSocieteDao.save(operationSociete);
         return 1;
     }
+
+    public List<OperationSociete> findByComptableTaiteurCode(String code) {
+        return operationSocieteDao.findByComptableTaiteurCode(code);
+    }
 }

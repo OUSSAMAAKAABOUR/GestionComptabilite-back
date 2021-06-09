@@ -14,6 +14,9 @@ public class Connection {
     private String etat;
     @OneToOne
     private Societe societeLogin;
+    //amine li zad hadchi
+    @OneToOne
+    private Comptable comptable;
 
 
     public Long getId() {
@@ -62,5 +65,13 @@ public class Connection {
 
     public void setSocieteLogin(Societe societeLogin) {
         this.societeLogin = societeLogin;
+    }
+
+    public Comptable getComptable() {
+        return comptable;
+    }
+
+    public void setComptable(Comptable comptable) {
+        this.comptable = comptable;
     }
 }

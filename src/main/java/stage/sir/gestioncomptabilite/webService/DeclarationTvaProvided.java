@@ -52,6 +52,10 @@ public class DeclarationTvaProvided {
     public int save(@RequestBody DeclarationTva declarationTva) {
         return declarationTvaService.save(declarationTva);
     }
+    @PostMapping("/savepourcomptable")
+    public int savePourComptable(@RequestBody DeclarationTva declarationTva) {
+        return declarationTvaService.savePourComptable(declarationTva);
+    }
 
     @GetMapping("annee/{annee}/mois/{mois}")
     public List<DeclarationTva> findByAnneeAndMois(double annee, double mois) {
@@ -69,10 +73,20 @@ public class DeclarationTvaProvided {
     public List<DeclarationTva> findByCriteria(@RequestBody DeclarationTvaCriteria declarationTvaCriteria) {
         return declarationTvaService.findByCriteria(declarationTvaCriteria);
     }
+    @PostMapping("/criteriapourcomptable")
+    public List<DeclarationTva> findByCriteriaPourComptable(@RequestBody DeclarationTvaCriteria declarationTvaCriteria) {
+        return declarationTvaService.findByCriteriaPourComptable(declarationTvaCriteria);
+    }
+
     @PostMapping("/savebrouillon")
     public int savebrouillon(@RequestBody DeclarationTva declarationTva) {
         return declarationTvaService.savebrouillon(declarationTva);
     }
+    @PostMapping("/savebrouillonpourcomptable")
+    public int savebrouillonPourComptable(@RequestBody DeclarationTva declarationTva) {
+        return declarationTvaService.savebrouillonPourComptable(declarationTva);
+    }
+
     @PostMapping("/convertToXmlFile")
     public void convertToXmlFile(@RequestBody DeclarationTva declarationTva) {
         declarationTvaService.convertToXmlFile(declarationTva);

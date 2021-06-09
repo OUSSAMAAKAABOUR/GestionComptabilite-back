@@ -41,4 +41,20 @@ public class ConnectionProvided {
     public int etatLogin(@PathVariable String username,@PathVariable String password) {
         return connectionService.etatLogin(username, password);
     }
+    @PutMapping("/validatecompte")
+    public int validatecompte(@RequestBody Connection connection) {
+        return connectionService.validatecompte(connection);
+    }
+    @PutMapping("/refusecompte")
+    public int refusecompte(@RequestBody Connection connection) {
+        return connectionService.refusecompte(connection);
+    }
+    @GetMapping("/compteencour/etat/{etat}")
+    public List<Connection> findByEtat(@PathVariable String etat) {
+        return connectionService.findByEtat(etat);
+    }
+    @GetMapping("/trvcomptecomptable/code/{code}")
+    public Connection findByComptableCode(@PathVariable String code) {
+        return connectionService.findByComptableCode(code);
+    }
 }

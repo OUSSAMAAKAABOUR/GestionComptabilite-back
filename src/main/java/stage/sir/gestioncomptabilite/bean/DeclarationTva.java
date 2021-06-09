@@ -20,6 +20,8 @@ public class DeclarationTva {
     private TypeDeclarationTva typeDeclarationTva;
     @ManyToOne
     private EtatDeclaration etatDeclaration;
+    @ManyToOne
+    private Comptable comptable;
 
     public EtatDeclaration getEtatDeclaration() {
         return etatDeclaration;
@@ -108,5 +110,13 @@ public class DeclarationTva {
 
     public void setTypeDeclarationTva(TypeDeclarationTva typeDeclarationTva) {
         this.typeDeclarationTva = typeDeclarationTva;
+    }
+
+    public Comptable getComptable() {
+        return comptable;
+    }
+
+    public void setComptable(Comptable comptable) {
+        this.comptable = comptable;
     }
 }
