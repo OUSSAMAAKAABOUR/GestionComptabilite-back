@@ -2,6 +2,7 @@ package stage.sir.gestioncomptabilite.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import stage.sir.gestioncomptabilite.bean.Comptable;
 import stage.sir.gestioncomptabilite.bean.Connection;
 import stage.sir.gestioncomptabilite.bean.Login;
 import stage.sir.gestioncomptabilite.bean.Societe;
@@ -70,6 +71,7 @@ public class ConnectionService {
             connection.setEtat("en cour");
             connection.setType("Societe");
             connection.setSocieteLogin(null);
+            connection.setComptable(null);
             connectionDao.save(connection);
             return 1;
         }
@@ -92,6 +94,20 @@ public class ConnectionService {
             return 1;
         }
     }
+
+    public int save2(Connection connection, Comptable comptable) {
+        if (connectionDao.findByUsernameAndPassword(connection.getUsername(), connection.getPassword()) != null) {
+            return -1;
+        } else {
+            connection.setEtat("valider");
+            connection.setType("Comptable");
+            connection.setSocieteLogin(null);
+            connection.setComptable(comptable);
+            connectionDao.save(connection);
+            return 1;
+        }
+
+    }
     public int validatecompte(Connection connection){
         Connection connection1 = connectionDao.findByUsernameAndPassword(connection.getUsername(),connection.getPassword());
         connection.setId(connection1.getId());
@@ -109,5 +125,9 @@ public class ConnectionService {
 
     public List<Connection> findByEtat(String etat) {
         return connectionDao.findByEtat(etat);
+    }
+
+    public Connection findByComptableCode(String code) {
+        return connectionDao.findByComptableCode(code);
     }
 }

@@ -8,6 +8,7 @@ public class DeclarationTvaCriteria {
     private String difftvamin;
     private String difftvamax;
     private String typedeclarationtva;
+    private String refcomptable;
 
     public String getSocieteref() {
         return societeref;
@@ -63,5 +64,13 @@ public class DeclarationTvaCriteria {
 
     public void setTypedeclarationtva(String typedeclarationtva) {
         this.typedeclarationtva = typedeclarationtva;
+    }
+
+    public String getRefcomptable() {
+        return refcomptable;
+    }
+
+    public void setRefcomptable(String refcomptable) {
+        this.refcomptable = refcomptable;
     }
 }

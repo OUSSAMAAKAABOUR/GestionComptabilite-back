@@ -53,4 +53,8 @@ public class ConnectionProvided {
     public List<Connection> findByEtat(@PathVariable String etat) {
         return connectionService.findByEtat(etat);
     }
+    @GetMapping("/trvcomptecomptable/code/{code}")
+    public Connection findByComptableCode(@PathVariable String code) {
+        return connectionService.findByComptableCode(code);
+    }
 }
