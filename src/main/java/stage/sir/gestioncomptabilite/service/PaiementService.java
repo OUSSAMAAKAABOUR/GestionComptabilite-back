@@ -50,4 +50,8 @@ public class PaiementService {
         }
         return 1;
     }
+
+    public List<Paiement> findByOperationSocieteRef(String ref) {
+        return paiementDao.findByOperationSocieteRef(ref);
+    }
 }
