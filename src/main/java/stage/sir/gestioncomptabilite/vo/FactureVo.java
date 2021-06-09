@@ -11,6 +11,15 @@ public class FactureVo {
     private Date dmin;
     private double totaldebit;
     private double totalcredit ;
+    private String reference;
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
 
     public Date getDmax() {
         return dmax;

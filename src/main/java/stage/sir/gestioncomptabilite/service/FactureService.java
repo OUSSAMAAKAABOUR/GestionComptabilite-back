@@ -114,13 +114,13 @@ public class FactureService extends AbstractFacade<Facture>{
             facture.setAnnee(facture.getDateOperation().getYear() + 1900);
 
             if(facture.getTypeOperation().equals("CRÉDIT")){
-                etatCredit = String.valueOf(facture.getMontantTTC());
+                etatCredit = String.valueOf(facture.getMontantTTC())+" DH";
                 etatDebit = "-";
                 facture.setCredit(etatCredit);
                 facture.setDebit(etatDebit);
             }
             if(facture.getTypeOperation().equals("DÉBIT")){
-                etatDebit = String.valueOf(facture.getMontantTTC());
+                etatDebit = String.valueOf(facture.getMontantTTC()) + " DH";
                 etatCredit = "-";
                 facture.setCredit(etatCredit);
                 facture.setDebit(etatDebit);
@@ -152,7 +152,7 @@ public class FactureService extends AbstractFacade<Facture>{
     public List<Facture>  Journal(FactureVo factureVo){
 
         String request = "SELECT f FROM Facture f WHERE 1=1 ";
-
+        request += " AND f.societeSource.ice = '" + factureVo.getReference() + "' ";
         request+=addConstraintMinMaxDate("f","dateOperation",factureVo.getDmin(),factureVo.getDmax());
         return entityManager.createQuery(request).getResultList();
 
@@ -215,13 +215,13 @@ public class FactureService extends AbstractFacade<Facture>{
             facture.setMois(facture.getDateOperation().getMonth() +1);
             facture.setAnnee(facture.getDateOperation().getYear() + 1900);
             if(facture.getTypeOperation().equals("CRÉDIT")){
-                etatCredit = String.valueOf(facture.getMontantTTC());
+                etatCredit = String.valueOf(facture.getMontantTTC()) +" DH";
                 etatDebit = "-";
                 facture.setCredit(etatCredit);
                 facture.setDebit(etatDebit);
             }
             if(facture.getTypeOperation().equals("DÉBIT")){
-                etatDebit = String.valueOf(facture.getMontantTTC());
+                etatDebit = String.valueOf(facture.getMontantTTC()) + " DH";
                 etatCredit = "-";
                 facture.setCredit(etatCredit);
                 facture.setDebit(etatDebit);
