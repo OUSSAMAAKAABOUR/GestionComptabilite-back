@@ -57,4 +57,8 @@ public class OperationSocieteProvided {
     public int affecterComptableValidateur(@RequestBody OperationSociete operationSociete) {
         return operationSocieteService.affecterComptableValidateur(operationSociete);
     }
+    @GetMapping("/trvoperationforcomptable/code/{code}")
+    public List<OperationSociete> findByComptableTaiteurCode(@PathVariable String code) {
+        return operationSocieteService.findByComptableTaiteurCode(code);
+    }
 }
