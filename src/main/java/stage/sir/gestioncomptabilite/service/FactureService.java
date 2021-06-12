@@ -242,4 +242,8 @@ public class FactureService extends AbstractFacade<Facture>{
     public List<Facture> findByAnnee(double annee) {
         return factureDao.findByAnnee(annee);
     }
+
+    public List<Facture> findBySocieteSourceIce(String ice) {
+        return factureDao.findBySocieteSourceIce(ice);
+    }
 }

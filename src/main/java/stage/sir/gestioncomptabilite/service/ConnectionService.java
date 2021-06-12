@@ -100,7 +100,7 @@ public class ConnectionService {
             return -1;
         } else {
             connection.setEtat("valider");
-            connection.setType("Comptable");
+            connection.setType("comptable");
             connection.setSocieteLogin(null);
             connection.setComptable(comptable);
             connectionDao.save(connection);
