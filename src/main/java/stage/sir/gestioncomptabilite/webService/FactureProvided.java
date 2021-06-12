@@ -86,4 +86,9 @@ public class FactureProvided {
     public List<Facture> findByAnnee(@PathVariable double annee) {
         return factureService.findByAnnee(annee);
     }
+
+    @GetMapping("/bysocieteice/ice/{ice}")
+    public List<Facture> findBySocieteSourceIce(@PathVariable String ice) {
+        return factureService.findBySocieteSourceIce(ice);
+    }
 }
