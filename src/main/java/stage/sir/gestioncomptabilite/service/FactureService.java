@@ -61,7 +61,14 @@ public class FactureService extends AbstractFacade<Facture>{
         return factureDao.findBySocieteSourceIceAndAnneeAndMoisAndTypeOperation(ice, annee, mois, typeoperation);
     }
 
+    public List<Facture> findBySocieteSourceIce(String ice) {
+        return factureDao.findBySocieteSourceIce(ice);
+    }
+
     public List<Facture> findBySocieteSourceIceAndTypeOperation(String ice, String typeoperation) {
+        if(typeoperation.equals("All") ){
+            return factureDao.findBySocieteSourceIce(ice);
+        }
         return factureDao.findBySocieteSourceIceAndTypeOperation(ice, typeoperation);
     }
 

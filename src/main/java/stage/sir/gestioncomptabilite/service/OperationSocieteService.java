@@ -48,6 +48,8 @@ public class OperationSocieteService {
     public int saveAlone(OperationSociete operationSociete) {
         TypeOperation typeOperation = typeOperationService.findByLibelle(operationSociete.getTypeOperation().getLibelle());
         operationSociete.setTypeOperation(typeOperation);
+        EtatOperationSociete etatOperationSociete = etatOperationSocieteService.findByRef("Encour");
+        operationSociete.setEtatOperationSociete(etatOperationSociete);
         Societe societe = societeService.findByIce(operationSociete.getSociete().getIce());
         operationSociete.setSociete(societe);
         if (findByRef(operationSociete.getRef()) != null) return -1;
@@ -60,7 +62,6 @@ public class OperationSocieteService {
             operationSociete.setComptableValidateur(null);
             operationSociete.setOperationSocieteJustifs(null);
             operationSociete.setPaiements(null);
-            operationSociete.setEtatOperationSociete(null);
             operationSocieteDao.save(operationSociete);
             return 1;
         }
