@@ -17,7 +17,6 @@ public interface FactureDao extends JpaRepository<Facture,Long> {
     List<Facture> findBySocieteSourceIceAndAnneeAndTrimAndTypeOperation(String ice, double annee,double trim,String typeoperation);
     List<Facture> findBySocieteSourceIceAndAnneeAndMoisAndTypeOperation(String ice, double annee,double mois,String typeoperation);
     List<Facture> findBySocieteSourceIceAndTypeOperation(String ice,String typeoperation);
-    List<Facture> findBySocieteSourceIce(String ice);
 
     List<Facture> findBySocieteSourceIceAndAnneeAndTypeOperation(String ice, double annee,String typeoperation);
     List<Facture> findByAnnee(double annee);
