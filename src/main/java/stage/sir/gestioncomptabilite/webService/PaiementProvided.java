@@ -31,7 +31,6 @@ public class PaiementProvided {
         return paiementService.save(paiement);
     }
     @GetMapping("/OperationSocieteRef/{ref}")
-
     public List<Paiement> findByOperationSocieteRef(@PathVariable String ref) {
         return paiementService.findByOperationSocieteRef(ref);
     }
