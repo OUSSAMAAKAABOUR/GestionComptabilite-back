@@ -16,6 +16,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.StringReader;
 import java.util.*;
 
 @Service
@@ -26,6 +27,18 @@ public class DeclarationTvaService {
 
     @Transactional
     public int deleteByRef(String ref) {
+
+        List<Facture> factures = new ArrayList<Facture>();
+        DeclarationTva declarationTva = findByRef(ref);
+        if (declarationTva.getTypeDeclarationTva().getLibelle().equals("TDTV1")){
+            factures = factureService.findBySocieteSourceIceAndAnneeAndTrim(declarationTva.getSociete().getIce(),declarationTva.getAnnee(),declarationTva.getTrim());
+        }else {
+            factures = factureService.findBySocieteSourceIceAndAnneeAndMois(declarationTva.getSociete().getIce(),declarationTva.getAnnee(),declarationTva.getMois());
+        }
+        for (Facture facture:factures) {
+            facture.setDeclarationTva(null);
+            factureService.update(facture);
+        }
         return declarationTvaDao.deleteByRef(ref);
     }
 
@@ -450,9 +463,28 @@ public class DeclarationTvaService {
         }
         return declarationReleveDeduction;
     }
+    public DeclarationReleveDeduction convertXmlStringToJavaObject(EmplacementXml emplacementXml){
+        DeclarationReleveDeduction declarationReleveDeduction = new DeclarationReleveDeduction();
+        JAXBContext jaxbContext;
+        try
+        {
+            jaxbContext = JAXBContext.newInstance(DeclarationReleveDeduction.class);
+
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+            declarationReleveDeduction = (DeclarationReleveDeduction) jaxbUnmarshaller.unmarshal(new StringReader(emplacementXml.getEmplacement()));
+
+        }
+        catch (JAXBException e)
+        {
+            e.printStackTrace();
+        }
+
+        return declarationReleveDeduction;
+    }
     public DeclarationTvaVo1 convertDeclarationReleveDeductionToDeclarationTvaVo1(EmplacementXml emplacementXml){
         DeclarationTvaVo1 declarationTvaVo1 = new DeclarationTvaVo1();
-        DeclarationReleveDeduction declarationReleveDeduction = convertXmlfileToJavaobject(emplacementXml);
+        DeclarationReleveDeduction declarationReleveDeduction = convertXmlStringToJavaObject(emplacementXml);
         declarationTvaVo1.setSocieteref(declarationReleveDeduction.getReleveDeductions().getRd().get(0).getRefF().getIce());
         declarationTvaVo1.setAnnee(declarationReleveDeduction.getAnnee());
         if (declarationReleveDeduction.getRegime() == 1){
@@ -466,7 +498,7 @@ public class DeclarationTvaService {
     }
     public DeclarationTvaVo2 convertDeclarationReleveDeductionToDeclarationTvaVo2(EmplacementXml emplacementXml){
         DeclarationTvaVo2 declarationTvaVo2 = new DeclarationTvaVo2();
-        DeclarationReleveDeduction declarationReleveDeduction = convertXmlfileToJavaobject(emplacementXml);
+        DeclarationReleveDeduction declarationReleveDeduction = convertXmlStringToJavaObject(emplacementXml);
         for (Rd rd:declarationReleveDeduction.getReleveDeductions().getRd()) {
             Facture facture = new Facture();
             if (rd.getMp().getId() == 1){
