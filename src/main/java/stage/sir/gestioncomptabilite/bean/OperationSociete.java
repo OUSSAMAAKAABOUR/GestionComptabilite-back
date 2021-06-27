@@ -16,6 +16,8 @@ public class OperationSociete {
     private String libelle;
     private double fraixFix ;
     private double fraixComptable ;
+    private String etatOperation;
+    private String raison;
     @ManyToOne
     private TypeOperation typeOperation  ;
     @ManyToOne
@@ -51,6 +53,22 @@ public class OperationSociete {
 
     public void setRef(String ref) {
         this.ref = ref;
+    }
+
+    public String getEtatOperation() {
+        return etatOperation;
+    }
+
+    public void setEtatOperation(String etatOperation) {
+        this.etatOperation = etatOperation;
+    }
+
+    public String getRaison() {
+        return raison;
+    }
+
+    public void setRaison(String raison) {
+        this.raison = raison;
     }
 
     public String getLibelle() {

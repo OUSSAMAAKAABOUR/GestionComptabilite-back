@@ -45,6 +45,15 @@ public class OperationSocieteProvided {
     public int refuseOperation(@RequestBody OperationSociete operationSociete) {
         return operationSocieteService.refuseOperation(operationSociete);
     }
+    @PutMapping("/validateOperationComptable")
+    public int validateOperationComptable(@RequestBody OperationSociete operationSociete) {
+        return operationSocieteService.validateOperationComptable(operationSociete);
+    }
+    @PutMapping("/refuseOperationComptable/message/{message}")
+    public int refuseOperationComptable(@RequestBody OperationSociete operationSociete,@PathVariable String message) {
+        return operationSocieteService.refuseOperationComptable(operationSociete, message);
+    }
+
     @GetMapping("/findoperationwherecomptablenull")
     public List<OperationSociete> findOperationPourAffecterComptable() {
         return operationSocieteService.findOperationPourAffecterComptable();
@@ -60,5 +69,9 @@ public class OperationSocieteProvided {
     @GetMapping("/trvoperationforcomptable/code/{code}")
     public List<OperationSociete> findByComptableTaiteurCode(@PathVariable String code) {
         return operationSocieteService.findByComptableTaiteurCode(code);
+    }
+    @GetMapping("/trvoperationforcomptablevalidateur/code/{code}")
+    public List<OperationSociete> findByComptableValidateurCode(@PathVariable String code) {
+        return operationSocieteService.findByComptableValidateurCode(code);
     }
 }

@@ -62,6 +62,8 @@ public class OperationSocieteService {
             operationSociete.setComptableValidateur(null);
             operationSociete.setOperationSocieteJustifs(null);
             operationSociete.setPaiements(null);
+            operationSociete.setEtatOperation("Encour");
+            operationSociete.setRaison(null);
             operationSocieteDao.save(operationSociete);
             return 1;
         }
@@ -94,9 +96,21 @@ public class OperationSocieteService {
         operationSocieteDao.save(operationSociete);
         return 1;
     }
+    public int validateOperationComptable(OperationSociete operationSociete){
+        operationSociete.setEtatOperation("Validate");
+        operationSociete.setRaison(" bien creér");
+        operationSocieteDao.save(operationSociete);
+        return 1;
+    }
     public int refuseOperation(OperationSociete operationSociete){
         EtatOperationSociete etatOperationSociete = etatOperationSocieteService.findByRef("Refuse");
         operationSociete.setEtatOperationSociete(etatOperationSociete);
+        operationSocieteDao.save(operationSociete);
+        return 1;
+    }
+    public int refuseOperationComptable(OperationSociete operationSociete, String message){
+        operationSociete.setEtatOperation("Refuser");
+        operationSociete.setRaison(message);
         operationSocieteDao.save(operationSociete);
         return 1;
     }
@@ -125,5 +139,14 @@ public class OperationSocieteService {
 
     public List<OperationSociete> findByComptableTaiteurCode(String code) {
         return operationSocieteDao.findByComptableTaiteurCode(code);
+    }
+
+    public List<OperationSociete> findByComptableValidateurCode(String code) {
+        String request = "SELECT o FROM OperationSociete o  WHERE 1=1 AND o.etatOperation = 'Encour' ";
+        request += " AND o.comptableValidateur.code = '" + code + "' ";
+
+        return entityManager.createQuery(request).getResultList();
+
+
     }
 }
