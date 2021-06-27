@@ -95,11 +95,11 @@ public class DeclarationTvaProvided {
     public DeclarationReleveDeduction convertXmlfileToJavaobject(@RequestBody EmplacementXml emplacementXml) {
         return declarationTvaService.convertXmlfileToJavaobject(emplacementXml);
     }
-    @PostMapping("/Tovo1")
+    @PostMapping("/tovo1")
     public DeclarationTvaVo1 convertDeclarationReleveDeductionToDeclarationTvaVo1(@RequestBody EmplacementXml emplacementXml) {
         return declarationTvaService.convertDeclarationReleveDeductionToDeclarationTvaVo1(emplacementXml);
     }
-    @PostMapping("/toVo2")
+    @PostMapping("/tovo2")
     public DeclarationTvaVo2 convertDeclarationReleveDeductionToDeclarationTvaVo2(@RequestBody EmplacementXml emplacementXml) {
         return declarationTvaService.convertDeclarationReleveDeductionToDeclarationTvaVo2(emplacementXml);
     }
