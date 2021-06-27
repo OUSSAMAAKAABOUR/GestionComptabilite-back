@@ -393,7 +393,7 @@ public class DeclarationTvaService {
             JAXBContext jaxbContext = JAXBContext.newInstance(DeclarationReleveDeduction.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            jaxbMarshaller.marshal(declarationReleveDeduction,new FileOutputStream("C:\\Users\\book\\Downloads\\"+declarationTva.getRef()+".xml"));
+            jaxbMarshaller.marshal(declarationReleveDeduction,new FileOutputStream("C:\\Users\\akaab\\Downloads\\"+declarationTva.getRef()+".xml"));
         }
         catch (JAXBException | FileNotFoundException e)
         {

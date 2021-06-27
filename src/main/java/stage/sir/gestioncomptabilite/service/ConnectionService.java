@@ -49,7 +49,7 @@ public class ConnectionService {
 
         else if (login.getEtat().equals("valider") && login.getType().equals("Societe") ) return  1;
         else if (login.getEtat().equals("valider") && login.getType().equals("admin") ) return  2;
-        else if (login.getEtat().equals("valider") && login.getType().equals("comptable") ) return  3;
+        else if (login.getEtat().equals("valider") && login.getType().equals("Comptable") ) return  3;
         else if (login.getEtat().equals("en cour") ) return  0;
         else {
             return -2;

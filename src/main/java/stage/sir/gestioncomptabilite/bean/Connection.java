@@ -12,6 +12,7 @@ public class Connection {
     private String password;
     private String type;
     private String etat;
+    private String email;
     @OneToOne
     private Societe societeLogin;
     //amine li zad hadchi
@@ -41,6 +42,14 @@ public class Connection {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getType() {
