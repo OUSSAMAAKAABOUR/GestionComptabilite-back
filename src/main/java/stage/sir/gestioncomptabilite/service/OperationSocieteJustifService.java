@@ -12,6 +12,7 @@ import java.util.List;
 
 @Service
 public class OperationSocieteJustifService {
+
     public OperationSocieteJustif findByRef(String ref) {
         return operationSocieteJustifDao.findByRef(ref);
     }
@@ -41,6 +42,8 @@ public class OperationSocieteJustifService {
     }
 
     public int save(OperationSocieteJustif operationSocieteJustif){
+        OperationSociete operationSociete = operationSocieteService.findByRef(operationSocieteJustif.getOperationSociete().getRef());
+        operationSocieteJustif.setOperationSociete(operationSociete);
         if (findByRef(operationSocieteJustif.getRef())!=null){
             return -1;
         } else {
@@ -64,4 +67,7 @@ public class OperationSocieteJustifService {
     }
     @Autowired
     OperationSocieteJustifDao operationSocieteJustifDao;
+    @Autowired
+    private OperationSocieteService operationSocieteService ;
+
 }
