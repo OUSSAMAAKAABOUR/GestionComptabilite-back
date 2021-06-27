@@ -27,6 +27,18 @@ public class DeclarationTvaService {
 
     @Transactional
     public int deleteByRef(String ref) {
+
+        List<Facture> factures = new ArrayList<Facture>();
+        DeclarationTva declarationTva = findByRef(ref);
+        if (declarationTva.getTypeDeclarationTva().getLibelle().equals("TDTV1")){
+            factures = factureService.findBySocieteSourceIceAndAnneeAndTrim(declarationTva.getSociete().getIce(),declarationTva.getAnnee(),declarationTva.getTrim());
+        }else {
+            factures = factureService.findBySocieteSourceIceAndAnneeAndMois(declarationTva.getSociete().getIce(),declarationTva.getAnnee(),declarationTva.getMois());
+        }
+        for (Facture facture:factures) {
+            facture.setDeclarationTva(null);
+            factureService.update(facture);
+        }
         return declarationTvaDao.deleteByRef(ref);
     }
 
