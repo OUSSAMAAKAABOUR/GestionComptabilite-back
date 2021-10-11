@@ -435,9 +435,9 @@ public class DeclarationTvaService {
             rd.setDfac(facture.getDateOperation()); rd.setDpai(facture.getDateOperation()); rd.setTtc(facture.getMontantTTC());
             refF.setIff(facture.getSocieteSource().getId()); refF.setIce(facture.getSocieteSource().getIce()); refF.setNom(facture.getSocieteSource().getRaisonSociale());
             rd.setRefF(refF);
-            if (facture.getTypeOperation().equals("Credit")){
+            if (facture.getTypeOperation().equals("CRÉDIT")){
                 mp.setId(1);
-            } else if (facture.getTypeOperation().equals("Debit")){
+            } else if (facture.getTypeOperation().equals("DÉBIT")){
                 mp.setId(2);
             }
             rd.setMp(mp);
